@@ -1,8 +1,20 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
 
 function App() {
+  const msg = async () => {
+      try {
+          const response = await axios.get('http://localhost/api').then((res) => res);
+          return response['data'];
+      } catch (error) {
+          console.error(error);
+          return '';
+      }
+  }
+  console.log(msg());
+
   return (
     <div className="App">
       <header className="App-header">

@@ -5,13 +5,30 @@ async fn hello() -> impl Responder {
     HttpResponse::Ok().body("Hello world!")
 }
 
+#[get("/api")]
+async fn api_hello() -> std::io::Result<HttpResponse> {
+    Ok(HttpResponse::Ok().body("Hello world!"))
+}
+
+#[post("/echo")]
+async fn echo(req_body: String) -> impl Responder {
+    HttpResponse::Ok().body(req_body)
+}
+
+async fn manual_hello() -> impl Responder {
+    HttpResponse::Ok().body("Hey there!")
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .service(hello)
+            .service(api_hello)
+            .service(echo)
+            .route("/hey", web::get().to(manual_hello))
     })
-    .bind("0.0.0.0:8080")?
+    .bind("0.0.0.0:8088")?
     .run()
     .await
 }
