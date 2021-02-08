@@ -1,26 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
 
 function App() {
-  const msg = async () => {
-      try {
-          const response = await axios.get('http://localhost/api').then((res) => res);
-          return response['data'];
-      } catch (error) {
-          console.error(error);
-          return '';
-      }
-  }
-  console.log(msg());
+  const [msg, setMsg] = useState("");
+
+  useEffect(() => {
+    const fetch = async () => {
+      const res = await axios.get('http://localhost/api').then((res) => res);
+      setMsg(res['data']);
+    }
+    fetch();
+  }, []);
 
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          {msg}
         </p>
         <a
           className="App-link"
