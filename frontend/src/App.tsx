@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
 
-function App() {
+const App = () => {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
