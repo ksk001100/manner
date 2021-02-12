@@ -2,9 +2,22 @@ import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
+import { fetchUsers } from './api/user';
+import { User } from './models/user';
 
-const App = () => {
+
+const App: React.FC = () => {
   const [msg, setMsg] = useState("");
+  const [userList, setUserList] = useState<User[] | undefined>(undefined);
+
+  const fetchUserReq = async () => {
+    try {
+      const { data } = await fetchUsers();
+      return data;
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   useEffect(() => {
     const fetch = async () => {
@@ -12,6 +25,11 @@ const App = () => {
       setMsg(res['data']);
     }
     fetch();
+
+    const data = fetchUserReq();
+    data.then(users => {
+      setUserList(users);
+    });
   }, []);
 
   return (
@@ -21,14 +39,29 @@ const App = () => {
         <p>
           {msg}
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <table>
+          <thead>
+            <tr>
+              <td>ID</td>
+              <td>NAME</td>
+              <td>EMAIL</td>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              userList && userList.map((user) => {
+                return (
+                  <tr key="{user.id}">
+                    <td>{user.id}</td>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                  </tr>
+                );
+              })
+            }
+          </tbody>
+          
+        </table>
       </header>
     </div>
   );

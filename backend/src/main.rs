@@ -5,27 +5,19 @@ pub mod handlers;
 pub mod models;
 pub mod schema;
 
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{get, App, Error, HttpResponse, HttpServer, Responder};
 use diesel::mysql::MysqlConnection;
-use diesel::prelude::*;
+// use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
 use dotenv::dotenv;
 use std::env;
 
 pub type Pool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
+pub type Response = Result<HttpResponse, Error>;
 
 #[get("/api")]
 async fn hello() -> impl Responder {
     HttpResponse::Ok().body("Hello API!")
-}
-
-#[post("/api/echo")]
-async fn echo(req_body: String) -> impl Responder {
-    HttpResponse::Ok().body(req_body)
-}
-
-async fn manual_hello() -> impl Responder {
-    HttpResponse::Ok().body("Hey there!")
 }
 
 #[actix_web::main]
@@ -42,9 +34,10 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .data(pool.clone())
             .service(hello)
-            .service(echo)
-            .service(handlers::users::get_users)
-            .route("/api/hey", web::get().to(manual_hello))
+            .service(handlers::users::index)
+            .service(handlers::users::show)
+            .service(handlers::users::new)
+            .service(handlers::users::destroy)
     })
     .bind("0.0.0.0:8088")?
     .run()
