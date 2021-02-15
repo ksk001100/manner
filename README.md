@@ -19,7 +19,7 @@ $ docker-compose run backend diesel migration generate <migration name>
 $ docker-compose run backend diesel migration run
 ```
 
-### Frontend development
+## Frontend development
 
 ### Add npm package
 ```bash
